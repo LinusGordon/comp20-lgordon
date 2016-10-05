@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Classic Movie</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">Classic Movie</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/classic.mp4" id="classic_video" controls></video>
+<div id="movie_quotes"></div>
+
+<script>
+	var quotes = ["Igor: DR. FRANKENSTEIN?!?!?","Dr. Frederick Frankenstein: Frokensteen.", "Igor: You're putting me on.", "Dr. Frederick Frankenstein: No, it pronounced, \"Frokensteen\".", "Igor: Do you also say Froaderick?", "Dr. Frederick Frankenstein: No . . . \"Frederick.\"", "Igor: Well, why isn't it 'Froaderick Frokensteen'?", "Dr. Frederick Frankenstein: It isn't, it's \"Frederick Frokensteen\"", "Igor: I see.", "Dr. Frederick Frankenstein: You must be Igor. [He pronounces it ee-gor.]", "Igor: No, it's pronounced \"eye-gor.\"", "Dr. Frederick Frankenstein: But they told me it was \"ee-gor\"...", "Igor: Well, they were wrong then, weren't they?", "Dr. Frederick Frankenstein: Uh, you were sent here by Herr Falkstein, weren't you?", "Igor: Yes. My grandfather used to work for your grandfather.", "Dr. Frederick Frankenstein: How nice.", "Igor: Of course the rates have gone up.", "Dr. Frederick Frankenstein: Of course, of course, I'm sure we'll get along splendidly. Oh, I uh, you know I don't mean to embarrass you, but I'm rather a brilliant surgeon. Perhaps I can help you with that hump.", "Igor: What hump?"];
+
+	var vid = document.getElementById("classic_video");
+	var caption = document.getElementById("movie_quotes");
+	vid.addEventListener("timeupdate", function() {
+		var time = vid.currentTime;
+		if(time > 23.5 && time < 30) {
+			caption.innerHTML = quotes[0];
+		} 
+		if(time > 30 && time < 33) {
+			caption.innerHTML = quotes[1];
+		} 
+		if(time > 33 && time < 36) {
+			caption.innerHTML = quotes[2];
+		} 
+		if(time > 36 && time < 39) {
+			caption.innerHTML = quotes[3];
+		} 
+		if(time > 39 && time < 42) {
+			caption.innerHTML = quotes[4];
+		}
+		if(time > 42 && time < 44) {
+			caption.innerHTML = quotes[5];
+		}
+		if(time > 44 && time < 47) {
+			caption.innerHTML = quotes[6];
+		} 
+		if(time > 47 && time < 50) {
+			caption.innerHTML = quotes[7];
+		} 
+		if(time > 50 && time < 51) {
+			caption.innerHTML = quotes[8];
+		}
+		if(time > 51 && time < 53) {
+			caption.innerHTML = quotes[9];
+		}
+		if(time > 53 && time < 56) {
+			caption.innerHTML = quotes[10];
+		}
+		if(time > 56 && time < 58) {
+			caption.innerHTML = quotes[11];
+		}
+		if(time > 58 && time < 60) {
+			caption.innerHTML = quotes[12];
+		}
+		if(time > 61 && time < 64) {
+			caption.innerHTML = quotes[13];
+		}
+		if(time > 64 && time < 68) {
+			caption.innerHTML = quotes[14];
+		}
+		if(time > 68 && time < 72) {
+			caption.innerHTML = quotes[15];
+		}
+		if(time > 72 && time < 74) {
+			caption.innerHTML = quotes[16];
+		}
+		if(time > 74 && time < 89) {
+			caption.innerHTML = quotes[17];
+		}
+		if(time > 89 && time < 91) {
+			caption.innerHTML = quotes[18];
+		} 
+	});
+</script>
+</body>
+</html>

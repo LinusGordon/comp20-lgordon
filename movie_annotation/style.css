@@ -1,0 +1,10 @@
+body {
+	text-align: center;
+	background-image: url("curtain.jpg");
+	color: yellow;
+}
+
+#movie_quotes {
+	font-weight: bold;
+	font-size: 20px;
+}
