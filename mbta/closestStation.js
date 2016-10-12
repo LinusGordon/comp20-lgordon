@@ -78,7 +78,7 @@ function renderMap() {
 }
 
 function setMarker() {
-	infowindow = new google.maps.InfoWindow();
+	infoWindow = new google.maps.InfoWindow();
 
 	for(var i = 0; i < stations.length; i++) {
 		var stationLocation = new google.maps.LatLng(stations[i]["stop_lat"], stations[i]["stop_lon"]);
@@ -91,15 +91,15 @@ function setMarker() {
 
 		marker.setMap(map);
 
-		// function addInfoWindow() {
-		// 	google.maps.event.addListener(marker, 'click', function() {
-	 //      		infowindow.setContent(marker.title);
-	 //      		infowindow.open(map, marker);
-  //     			});
-		// }
-		// addInfoWindow();
+		createInfoWindow(marker);
 	}
 }
 
+function createInfoWindow(marker) {
+	google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.setContent(marker.title);
+            infoWindow.open(map, this);
+        });
+}
 
 
