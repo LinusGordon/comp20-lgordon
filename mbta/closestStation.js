@@ -1,25 +1,25 @@
-var stations = [{"South, Station", 42.352271, -71.05524200000001},
-{"Andrew", 42.330154, -71.057655},
-{"Porter, Square", 42.3884, -71.11914899999999},
-{"Harvard, Square", 42.373362, -71.118956},
-{"JFK/UMass", 42.320685, -71.052391},
-{"Savin, Hill", 42.31129, -71.053331},
-{"Park, Street", 42.35639457, -71.0624242},
-{"Broadway", 42.342622, -71.056967},
-{"North, Quincy", 42.275275, -71.029583},
-{"Shawmut", 42.29312583, -71.06573796000001},
-{"Davis", 42.39674, -71.121815},
-{"Alewife", 42.395428, -71.142483},
-{"Kendall/MIT", 42.36249079, -71.08617653},
-{"Charles/MGH", 42.361166, -71.070628},
-{"Downtown, Crossing", 42.355518, -71.060225},
-{"Quincy, Center", 42.251809, -71.005409},
-{"Quincy, Adams", 42.233391, -71.007153},
-{"Ashmont", 42.284652, -71.06448899999999},
-{"Wollaston", 42.2665139, -71.0203369},
-{"Fields, Corner", 42.300093, -71.061667},
-{"Central, Square", 42.365486, -71.103802},
-{"Braintree", 42.2078543, -71.0011385}]
+var stations = [{"stop_name": "South Station", "stop_lat": 42.352271 , "stop_lon":-71.05524200000001},
+{"stop_name": "Andrew", "stop_lat": 42.330154 , "stop_lon":-71.057655},
+{"stop_name": "Porter Square", "stop_lat": 42.3884 , "stop_lon":-71.11914899999999},
+{"stop_name": "Harvard Square", "stop_lat": 42.373362 , "stop_lon":-71.118956},
+{"stop_name": "JFK/UMass", "stop_lat": 42.320685 , "stop_lon":-71.052391},
+{"stop_name": "Savin Hill", "stop_lat": 42.31129 , "stop_lon":-71.053331},
+{"stop_name": "Park Street", "stop_lat": 42.35639457 , "stop_lon":-71.0624242},
+{"stop_name": "Broadway", "stop_lat": 42.342622 , "stop_lon":-71.056967},
+{"stop_name": "North Quincy", "stop_lat": 42.275275 , "stop_lon":-71.029583},
+{"stop_name": "Shawmut", "stop_lat": 42.29312583 , "stop_lon":-71.06573796000001},
+{"stop_name": "Davis", "stop_lat": 42.39674 , "stop_lon":-71.121815},
+{"stop_name": "Alewife", "stop_lat": 42.395428 , "stop_lon":-71.142483},
+{"stop_name": "Kendall/MIT", "stop_lat": 42.36249079 , "stop_lon":-71.08617653},
+{"stop_name": "Charles/MGH", "stop_lat": 42.361166 , "stop_lon":-71.070628},
+{"stop_name": "Downtown Crossing", "stop_lat": 42.355518 , "stop_lon":-71.060225},
+{"stop_name": "Quincy Center", "stop_lat": 42.251809 , "stop_lon":-71.005409},
+{"stop_name": "Quincy Adams", "stop_lat": 42.233391 , "stop_lon":-71.007153},
+{"stop_name": "Ashmont", "stop_lat": 42.284652 , "stop_lon":-71.06448899999999},
+{"stop_name": "Wollaston", "stop_lat": 42.2665139 , "stop_lon":-71.0203369},
+{"stop_name": "Fields Corner", "stop_lat": 42.300093 , "stop_lon":-71.061667},
+{"stop_name": "Central Square", "stop_lat": 42.365486 , "stop_lon":-71.103802},
+{"stop_name": "Braintree", "stop_lat": 42.2078543 , "stop_lon":-71.0011385}]
 
 var currentLat = 0;
 var currentLong = 0;
@@ -31,8 +31,6 @@ var myOptions = {
           mapTypeId: google.maps.MapTypeId.ROADMAP
 };
 
-var marker;
-var infowindow = new google.maps.InfoWindow();
 var map;
 
 function myLocation() {
@@ -57,18 +55,21 @@ function initMap() {
       
 
 function renderMap() {
+
       currentLocation = new google.maps.LatLng(currentLat, currentLong);
       
       //Focus on my location
       map.panTo(currentLocation);
       
       // Create a marker
-      marker = new google.maps.Marker({
+      var marker = new google.maps.Marker({
 	      position: currentLocation,
 	      title: "Current Location"
       });
       marker.setMap(map);
       
+      var infowindow = new google.maps.InfoWindow();
+
       // Open info window on click of marker
       google.maps.event.addListener(marker, 'click', function() {
 	      infowindow.setContent(marker.title);
@@ -77,11 +78,28 @@ function renderMap() {
 }
 
 function setMarker() {
+	infowindow = new google.maps.InfoWindow();
+
 	for(var i = 0; i < stations.length; i++) {
-		marker = new google.maps.Marker({
-			position: new google.maps.LatLng(stations[i][1], stations[i][2]),
-			title: stations[i][0]
+		var stationLocation = new google.maps.LatLng(stations[i]["stop_lat"], stations[i]["stop_lon"]);
+
+		var marker = new google.maps.Marker({
+			position: stationLocation,
+			title: stations[i]["stop_name"],
+			icon: 'icon.png'
 		});
+
+		marker.setMap(map);
+
+		// function addInfoWindow() {
+		// 	google.maps.event.addListener(marker, 'click', function() {
+	 //      		infowindow.setContent(marker.title);
+	 //      		infowindow.open(map, marker);
+  //     			});
+		// }
+		// addInfoWindow();
 	}
 }
+
+
 
