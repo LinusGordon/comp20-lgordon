@@ -59,7 +59,15 @@ var myOptions = {
           mapTypeId: google.maps.MapTypeId.ROADMAP
 };
 
+var schedule;
+scheduleRequest = new XMLHttpRequest();
+scheduleRequest.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+scheduleRequest.onreadystatechange = setInfoWindows;
+scheduleRequest.send();
+
+
 var map;
+
 
 function myLocation() {
 	var location = navigator.geolocation;
@@ -79,23 +87,6 @@ function initMap() {
     map = new google.maps.Map(document.getElementById("map"), myOptions);
     myLocation();
     setMarker();
-    var ashmontPath = new google.maps.Polyline( {
-    	path:polylineAshmont,
-    	geodesic: true,
-    	strokeColor: '#FF0000',
-    	strokeOpacity: 1.0,
-    	strokeWeight: 2
-    });
-    ashmontPath.setMap(map);
-
-    var braintreePath = new google.maps.Polyline( {
-    	path:polylineBraintree,
-    	geodesic: true,
-    	strokeColor: '#FF0000',
-    	strokeOpacity: 1.0,
-    	strokeWeight: 2
-    });
-    braintreePath.setMap(map);
 }
       
 
@@ -120,9 +111,12 @@ function renderMap() {
 	      infowindow.setContent(marker.title);
 	      infowindow.open(map, marker);
       });
+
+      renderPolylines();
 }
 
 function setMarker() {
+
 	infoWindow = new google.maps.InfoWindow();
 
 	for(var i = 0; i < stations.length; i++) {
@@ -142,9 +136,83 @@ function setMarker() {
 
 function createInfoWindow(marker) {
 	google.maps.event.addListener(marker, 'click', function () {
-            infoWindow.setContent(marker.title);
+	    var content = "<h1>" + marker.title + "</h1>";
+	    var trips = schedule["TripList"]["Trips"];
+	    for(var i = 0; i < trips.length; i++) {
+	    	for(var j = 0; j < trips[i]["Predictions"].length; j++) {
+		    	if(trips[i]["Predictions"][j]["Stop"] == marker.title) {
+		    		var prediction = trips[i]["Predictions"][j]["Seconds"];
+		    		var minutes = Math.floor(prediction / 60);
+		    		var seconds = prediction - minutes * 60;
+		    		if(seconds < 10) { 
+		    			seconds = "0" + seconds;
+		    		}
+		    		if(minutes >= 0) {
+		    			content += "<p> Arriving in " + minutes + " minutes and " + seconds + " seconds" + "</p>";
+		    		}
+		    	}
+		}
+	    }
+            infoWindow.setContent(content);
             infoWindow.open(map, this);
         });
 }
 
+function setInfoWindows() {
+	console.log(scheduleRequest.status)
+	if(scheduleRequest.readyState == 4 && scheduleRequest.status == 200) {
+		var data = scheduleRequest.responseText;
+		schedule = JSON.parse(data);
+		console.log(schedule);
+	}
+}
+
+function renderPolylines() {
+    var ashmontPath = new google.maps.Polyline( {
+    	path:polylineAshmont,
+    	geodesic: true,
+    	strokeColor: '#FF0000',
+    	strokeOpacity: 1.0,
+    	strokeWeight: 2
+    });
+    ashmontPath.setMap(map);
+
+    var braintreePath = new google.maps.Polyline( {
+    	path:polylineBraintree,
+    	geodesic: true,
+    	strokeColor: '#FF0000',
+    	strokeOpacity: 1.0,
+    	strokeWeight: 2
+    });
+    braintreePath.setMap(map);
+}
+
+
+function haversineDistance(coords1, coords2, isMiles) {
+  function toRad(x) {
+    return x * Math.PI / 180;
+  }
+
+  var lon1 = coords1[0];
+  var lat1 = coords1[1];
+
+  var lon2 = coords2[0];
+  var lat2 = coords2[1];
+
+  var R = 6371; // km
+
+  var x1 = lat2 - lat1;
+  var dLat = toRad(x1);
+  var x2 = lon2 - lon1;
+  var dLon = toRad(x2)
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+
+  if(isMiles) d /= 1.60934;
+
+  return d;
+}
 
