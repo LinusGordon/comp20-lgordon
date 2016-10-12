@@ -97,10 +97,22 @@ function renderMap() {
       //Focus on my location
       map.panTo(currentLocation);
       
+      var minDistance = Number.MAX_VALUE;
+      var minStation;
+      for(var i = 0; i < stations.length; i++) {
+      	      var curStation = [stations[i]["stop_lat"], stations[i]["stop_lon"]];
+              var curDistance = haversineDistance([currentLat, currentLong], curStation, true);
+      	      if(curDistance < minDistance) {
+      	             minDistance = curDistance;
+      	             minStation = stations[i]["stop_name"];
+      	      }
+      }
+      minDistance = minDistance.toFixed(2);
+
       // Create a marker
       var marker = new google.maps.Marker({
 	      position: currentLocation,
-	      title: "Current Location"
+	      title: "<h1>Current Location</h1>" + "<p>" + minStation + " is " + minDistance + " miles away.</p>"
       });
       marker.setMap(map);
       
@@ -159,11 +171,9 @@ function createInfoWindow(marker) {
 }
 
 function setInfoWindows() {
-	console.log(scheduleRequest.status)
 	if(scheduleRequest.readyState == 4 && scheduleRequest.status == 200) {
 		var data = scheduleRequest.responseText;
 		schedule = JSON.parse(data);
-		console.log(schedule);
 	}
 }
 
@@ -187,7 +197,7 @@ function renderPolylines() {
     braintreePath.setMap(map);
 }
 
-
+// From Stack Overflow: http://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
 function haversineDistance(coords1, coords2, isMiles) {
   function toRad(x) {
     return x * Math.PI / 180;
