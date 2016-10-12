@@ -99,15 +99,32 @@ function renderMap() {
       
       var minDistance = Number.MAX_VALUE;
       var minStation;
+      var minLat;
+      var minLong;
       for(var i = 0; i < stations.length; i++) {
       	      var curStation = [stations[i]["stop_lat"], stations[i]["stop_lon"]];
               var curDistance = haversineDistance([currentLat, currentLong], curStation, true);
       	      if(curDistance < minDistance) {
       	             minDistance = curDistance;
       	             minStation = stations[i]["stop_name"];
+      	             minLat = stations[i]["stop_lat"];
+      	             minLong = stations[i]["stop_lon"];
       	      }
       }
       minDistance = minDistance.toFixed(2);
+
+      var polylineClosestStation = [{lat: minLat , lng: minLong}, {lat: currentLat, lng: currentLong}];
+
+      var closestStationPath = new google.maps.Polyline( {
+	    	path: polylineClosestStation,
+	    	geodesic: true,
+	    	strokeColor: '#0000FF',
+	    	strokeOpacity: 1.0,
+	    	strokeWeight: 2
+       });
+      closestStationPath.setMap(map);
+
+
 
       // Create a marker
       var marker = new google.maps.Marker({
@@ -148,7 +165,7 @@ function setMarker() {
 
 function createInfoWindow(marker) {
 	google.maps.event.addListener(marker, 'click', function () {
-	    var content = "<h1>" + marker.title + "</h1>";
+	    var content = "<h1 class='windowHeader'>" + marker.title + "</h1><hr>";
 	    var trips = schedule["TripList"]["Trips"];
 	    for(var i = 0; i < trips.length; i++) {
 	    	for(var j = 0; j < trips[i]["Predictions"].length; j++) {
@@ -156,11 +173,12 @@ function createInfoWindow(marker) {
 		    		var prediction = trips[i]["Predictions"][j]["Seconds"];
 		    		var minutes = Math.floor(prediction / 60);
 		    		var seconds = prediction - minutes * 60;
+		    		var destination = trips[i]["Destination"];
 		    		if(seconds < 10) { 
 		    			seconds = "0" + seconds;
 		    		}
 		    		if(minutes >= 0) {
-		    			content += "<p> Arriving in " + minutes + " minutes and " + seconds + " seconds" + "</p>";
+		    			content += "<p>" + "<span class='destination'>" + destination + "</span> bound arriving in " + minutes + " minutes and " + seconds + " seconds" + "</p>";
 		    		}
 		    	}
 		}

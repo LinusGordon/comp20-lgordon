@@ -13,3 +13,12 @@ body {
 	    width: 100%;
 	    height: 100%;
 }
+
+.windowHeader {
+	text-align: center;
+	font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+.destination {
+	font-weight: bold;
+}
