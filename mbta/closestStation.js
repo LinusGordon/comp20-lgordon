@@ -70,31 +70,31 @@ var map;
 
 
 function myLocation() {
-	var location = navigator.geolocation;
-	if (location) {
-        	location.getCurrentPosition(function(position) {
-	        	currentLat = position.coords.latitude;
-	        	currentLong = position.coords.longitude;
-	        	renderMap();
-    		});
-    	}
-    	else {
-  		alert("Geolocation not supported.");
+        var location = navigator.geolocation;
+        if (location) {
+                location.getCurrentPosition(function(position) {
+                        currentLat = position.coords.latitude;
+                        currentLong = position.coords.longitude;
+                        renderMap();
+                });
+        }
+        else {
+                alert("Geolocation not supported.");
         }
 }
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), myOptions);
-    myLocation();
-    setMarker();
+        map = new google.maps.Map(document.getElementById("map"), myOptions);
+        myLocation();
+        setMarker();
 }
       
 
 function renderMap() {
 
-      currentLocation = new google.maps.LatLng(currentLat, currentLong);
+        currentLocation = new google.maps.LatLng(currentLat, currentLong);
       
-      //Focus on my location
+        //Focus on my location
       map.panTo(currentLocation);
       
       var minDistance = Number.MAX_VALUE;
@@ -102,25 +102,25 @@ function renderMap() {
       var minLat;
       var minLong;
       for(var i = 0; i < stations.length; i++) {
-      	      var curStation = [stations[i]["stop_lat"], stations[i]["stop_lon"]];
+              var curStation = [stations[i]["stop_lat"], stations[i]["stop_lon"]];
               var curDistance = haversineDistance([currentLat, currentLong], curStation, true);
-      	      if(curDistance < minDistance) {
-      	             minDistance = curDistance;
-      	             minStation = stations[i]["stop_name"];
-      	             minLat = stations[i]["stop_lat"];
-      	             minLong = stations[i]["stop_lon"];
-      	      }
+              if(curDistance < minDistance) {
+                     minDistance = curDistance;
+                     minStation = stations[i]["stop_name"];
+                     minLat = stations[i]["stop_lat"];
+                     minLong = stations[i]["stop_lon"];
+              }
       }
       minDistance = minDistance.toFixed(2);
 
       var polylineClosestStation = [{lat: minLat , lng: minLong}, {lat: currentLat, lng: currentLong}];
 
       var closestStationPath = new google.maps.Polyline( {
-	    	path: polylineClosestStation,
-	    	geodesic: true,
-	    	strokeColor: '#0000FF',
-	    	strokeOpacity: 1.0,
-	    	strokeWeight: 2
+                path: polylineClosestStation,
+                geodesic: true,
+                strokeColor: '#0000FF',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
        });
       closestStationPath.setMap(map);
 
@@ -128,8 +128,8 @@ function renderMap() {
 
       // Create a marker
       var marker = new google.maps.Marker({
-	      position: currentLocation,
-	      title: "<h1>Current Location</h1>" + "<p>" + minStation + " is " + minDistance + " miles away.</p>"
+              position: currentLocation,
+              title: "<h1>Current Location</h1>" + "<p>" + minStation + " is " + minDistance + " miles away.</p>"
       });
       marker.setMap(map);
       
@@ -137,8 +137,8 @@ function renderMap() {
 
       // Open info window on click of marker
       google.maps.event.addListener(marker, 'click', function() {
-	      infowindow.setContent(marker.title);
-	      infowindow.open(map, marker);
+              infowindow.setContent(marker.title);
+              infowindow.open(map, marker);
       });
 
       renderPolylines();
@@ -146,101 +146,103 @@ function renderMap() {
 
 function setMarker() {
 
-	infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow();
 
-	for(var i = 0; i < stations.length; i++) {
-		var stationLocation = new google.maps.LatLng(stations[i]["stop_lat"], stations[i]["stop_lon"]);
+        for(var i = 0; i < stations.length; i++) {
+                var stationLocation = new google.maps.LatLng(stations[i]["stop_lat"], stations[i]["stop_lon"]);
 
-		var marker = new google.maps.Marker({
-			position: stationLocation,
-			title: stations[i]["stop_name"],
-			icon: 'icon.png'
-		});
+                var marker = new google.maps.Marker({
+                        position: stationLocation,
+                        title: stations[i]["stop_name"],
+                        icon: 'icon.png'
+                });
 
-		marker.setMap(map);
+                marker.setMap(map);
 
-		createInfoWindow(marker);
-	}
+                createInfoWindow(marker);
+        }
 }
 
 function createInfoWindow(marker) {
-	google.maps.event.addListener(marker, 'click', function () {
-	    var content = "<h1 class='windowHeader'>" + marker.title + "</h1><hr>";
-	    var trips = schedule["TripList"]["Trips"];
-	    for(var i = 0; i < trips.length; i++) {
-	    	for(var j = 0; j < trips[i]["Predictions"].length; j++) {
-		    	if(trips[i]["Predictions"][j]["Stop"] == marker.title) {
-		    		var prediction = trips[i]["Predictions"][j]["Seconds"];
-		    		var minutes = Math.floor(prediction / 60);
-		    		var seconds = prediction - minutes * 60;
-		    		var destination = trips[i]["Destination"];
-		    		if(seconds < 10) { 
-		    			seconds = "0" + seconds;
-		    		}
-		    		if(minutes >= 0) {
-		    			content += "<p>" + "<span class='destination'>" + destination + "</span> bound arriving in " + minutes + " minutes and " + seconds + " seconds" + "</p>";
-		    		}
-		    	}
-		}
-	    }
+        google.maps.event.addListener(marker, 'click', function () {
+        var content = "<h1 class='windowHeader'>" + marker.title + "</h1><hr>";
+        if(schedule == undefined) {
+                alert("Please refresh page for train schedules.");
+         } else {
+                var trips = schedule["TripList"]["Trips"];
+                for(var i = 0; i < trips.length; i++) {
+                        for(var j = 0; j < trips[i]["Predictions"].length; j++) {
+                                if(trips[i]["Predictions"][j]["Stop"] == marker.title) {
+                                        var prediction = trips[i]["Predictions"][j]["Seconds"];
+                                        var minutes = Math.floor(prediction / 60);
+                                        var seconds = prediction - minutes * 60;
+                                        var destination = trips[i]["Destination"];
+                                        if(seconds < 10) { 
+                                                seconds = "0" + seconds;
+                                        }
+                                        if(minutes >= 0) {
+                                                content += "<p>" + "<span class='destination'>" + destination + "</span> bound arriving in " + minutes + " minutes and " + seconds + " seconds" + "</p>";
+                                        }
+                                }
+                            }
+                        }
             infoWindow.setContent(content);
             infoWindow.open(map, this);
+        }
         });
 }
 
 function setInfoWindows() {
-	if(scheduleRequest.readyState == 4 && scheduleRequest.status == 200) {
-		var data = scheduleRequest.responseText;
-		schedule = JSON.parse(data);
-	}
+        if(scheduleRequest.readyState == 4 && scheduleRequest.status == 200) {
+                var data = scheduleRequest.responseText;
+                schedule = JSON.parse(data);
+        }
 }
 
 function renderPolylines() {
-    var ashmontPath = new google.maps.Polyline( {
-    	path:polylineAshmont,
-    	geodesic: true,
-    	strokeColor: '#FF0000',
-    	strokeOpacity: 1.0,
-    	strokeWeight: 2
-    });
-    ashmontPath.setMap(map);
+        var ashmontPath = new google.maps.Polyline( {
+                path:polylineAshmont,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+        });
+        ashmontPath.setMap(map);
 
-    var braintreePath = new google.maps.Polyline( {
-    	path:polylineBraintree,
-    	geodesic: true,
-    	strokeColor: '#FF0000',
-    	strokeOpacity: 1.0,
-    	strokeWeight: 2
-    });
-    braintreePath.setMap(map);
+        var braintreePath = new google.maps.Polyline( {
+                path:polylineBraintree,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+        });
+        braintreePath.setMap(map);
 }
 
 // From Stack Overflow: http://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
 function haversineDistance(coords1, coords2, isMiles) {
-  function toRad(x) {
-    return x * Math.PI / 180;
-  }
+        function toRad(x) {
+                return x * Math.PI / 180;
+        }
 
-  var lon1 = coords1[0];
-  var lat1 = coords1[1];
+        var lon1 = coords1[0];
+        var lat1 = coords1[1];
 
-  var lon2 = coords2[0];
-  var lat2 = coords2[1];
+        var lon2 = coords2[0];
+        var lat2 = coords2[1];
 
-  var R = 6371; // km
+        var R = 6371; // km
 
-  var x1 = lat2 - lat1;
-  var dLat = toRad(x1);
-  var x2 = lon2 - lon1;
-  var dLon = toRad(x2)
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
+        var x1 = lat2 - lat1;
+        var dLat = toRad(x1);
+        var x2 = lon2 - lon1;
+        var dLon = toRad(x2)
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
 
-  if(isMiles) d /= 1.60934;
+        if(isMiles) d /= 1.60934;
 
-  return d;
+        return d;
 }
 
