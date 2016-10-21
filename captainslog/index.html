@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Captain's Log</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+	
+		$(document).ready(function () {
+			showEntries(); // display messages from localstorage
+			$("#msg").change(storeMessage); // store message when one is added
+		});
+		
+		// display all messages in localstorage
+		function showEntries() {
+			$('#log').html("");
+			for(key in localStorage) {
+				$("#log").prepend("<p>" + key + " - " +localStorage.getItem(key) + "<p>");
+			}
+		}
+
+		// store messages in localstorage with timestamp
+		function storeMessage() {
+			var time = new Date();
+			localStorage.setItem(time, $('#msg').val());
+			$("#msg").val("");
+			showEntries();
+		}
+
+	</script>
+</head>
+
+<body>
+	<h1>Captain's Log</h1>
+	<h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
+	<div id="log"></div>
+</body>
+</html>
