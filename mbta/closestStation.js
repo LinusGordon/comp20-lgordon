@@ -61,7 +61,7 @@ var myOptions = {
 
 var schedule;
 scheduleRequest = new XMLHttpRequest();
-scheduleRequest.open("get", "https://rocky-taiga-26352.herokuapp.com/redline.json", true);
+scheduleRequest.open("get", "https://still-harbor-18581.herokuapp.com/redline.json", true);
 scheduleRequest.onreadystatechange = setInfoWindows;
 scheduleRequest.send();
 
