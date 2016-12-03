@@ -1,0 +1,22 @@
+.center {
+	text-align: center;
+}
+
+html {
+	font-family: arial;
+}
+
+p {
+	padding-left: 50px;
+	padding-right: 50px;
+}
+
+.list-header {
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+img {
+	width: 50%;
+	height: 50%;
+}
