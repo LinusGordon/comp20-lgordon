@@ -21,8 +21,8 @@
 		<ul>
 			<li>Location: GameManager.prototype.isGameTerminated function in gamemanager.js</li>
 			<li>Severity: HIGH. Malicious code could be injected into the website. This code could do things such as change the HTML page, making the page useless. More importantly, the code could access personal/sensitive information.</li>
-			<li>Description: When prompted to enter in my username, I instead inserted a simple script. Upon refreshing the page, my script ran.</li>
-			<li>Below is a picture showing an alert that pops up that I injected through a script when entering a username. <img src="XSS_example.png" alt="Cross Site Scripting example"></li>
+			<li>Description: When prompted to enter in my username, I instead inserted a simple script that alerts the user. Upon refreshing the page, my script ran, as seen in the picture below.</li>
+			<li>Proof of vulnerability: Below is a picture showing an alert that pops up that I injected through a script when entering a username. <img src="XSS_example.png" alt="Cross Site Scripting example"></li>
 			<li>Resolution: Validate the username a user inputs before inserting it into the database. When validating, you could put a character limit so that an opening an closing script tag could not fit. You could also remove all special characters such as &#60;, >, and \ to break the the script tags.</li>
 		</ul>
 		</li>
@@ -31,8 +31,9 @@
 			<li>Location: Server Code (picture of where exactly below)</li>
 			<li>Severity: MEDIUM. This is a very bad practice as it allows anyone to send a request to the server. However, compared to XSS, I don't think it is as severe, especially since this database is not storing any sensitive information.</li>
 			<li>Description: I found this by examining Bhushan's server code. Almost immediately I saw the line ' Access-Control-Allow-Origin": "*" ', which is the location of the issue.</li>
-			<li>Proof of vulnerablity in the highlighted section of his code below.<img src="wildcard.png" alt="use of wildcard"></li>
-			<li>Instead of using the wildcard, create a whitelist of sites that should be allowed to access the server.</li>
+			<li>Proof of vulnerablity in the highlighted section of his code below.</li>
+			<img src="wildcard.png" alt="use of wildcard">
+			<li>Resolution: Instead of using the wildcard, create a whitelist of sites that should be allowed to access the server.</li>
 		</ul>
 		</li>
 		<li><div class="list-header">Lack of Output Character Limit</div>
@@ -41,7 +42,7 @@
 			<li>Severity: LOW. This has potential to annoy users as it makes it very difficult to read the high score table.</li>
 			<li>Description: There is no limit to how long a username or score can be when creating the table to display the high score list. Using curl, I was able to input a username with a ton of characters. Then, when the highscores were displayed, the massive username was displayed in an extremely wide table column, ruining the format of the table and making it very difficult to read. </li>
 			<li>Proof of vulnerablity: As you can see, the table is formatted horribly because of the extremely long username in the image below. <img src="long_username.png" alt="lack of output character limit picture"></li>
-			<li>Resolution: Set a character limit when creating the table so that this cannot happen.</li>
+			<li>Resolution: Set a character limit when generating the table so that this cannot happen.</li>
 		</ul>
 		</li>
 		<li><div class="list-header">Lack of Input Size Limit</div>
